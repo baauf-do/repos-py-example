@@ -1,0 +1,23 @@
+# GIT: file cấu hình khi định dạng file đưa lên server
+# git config --global core.autocrlf false
+# dùng lệnh này để add file ko cho thay đổi định dạng
+# git add --renormalize .
+* text=auto
+
+*.tf  eol=lf
+*.tfvars  eol=lf
+*.yml  eol=lf
+*.vue eol=lf
+*.js eol=lf
+*.html eol=lf
+*.browserslistrc eol=lf
+*.gitignore eol=lf
+*.md eol=lf
+*.json eol=lf
+*.svg eol=lf
+*.css eol=lf
+*.gitattributes eol=lf
+*.lock eol=lf
+*.sh text eol=lf
+*.txt text eol=lf
+#*.txt text eol=crlf

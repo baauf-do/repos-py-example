@@ -1,0 +1,15 @@
+# file cau hinh chinh
+# can run: pip install ruff
+# de su dung
+
+[tool.ruff]
+line-length = 88
+indent-width = 2
+target-version = "py310"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+docstring-code-line-length = 140

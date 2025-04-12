@@ -1,0 +1,11 @@
+# PaddleOCR với GPU (dùng CUDA 12.7, tương thích CUDA 12.8)
+# paddleocr>=2.6
+# paddlepaddle-gpu==2.6.0.post127 -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html
+
+# PyTorch (có hỗ trợ CUDA 12.1 trở lên)
+torch==2.1.0
+
+# Xử lý ảnh và OCR
+pdf2image==1.16.3
+Pillow==10.2.0
+python-docx==1.1.0

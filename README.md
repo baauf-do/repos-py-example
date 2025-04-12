@@ -36,10 +36,10 @@ Learn python through examples
 - yeu cau phai co card do hoa (vd: rtx4060)
   - cap nhat drive card
   - tai ve cai dat 2 cai
-    - Tải & Cài đặt CUDA 12.8
-    - Tải & Cài đặt cuDNN 9.8.0 cho CUDA 12.8
-      - cuDNN 9.8.0
-      - CUDA 12.x
+    - Tải & Cài đặt CUDA: 12.8 → KHÔNG phù hợp với TensorFlow 2.16.1 => 11.8
+    - Tải & Cài đặt cuDNN: 9.8.0 → KHÔNG phù hợp với TensorFlow 2.16.1 => 8.6
+      - cuDNN 8.6
+      - CUDA 11.8
       - Windows x86_64
   - kiem tra xem da co CUDA chua
   ```bash

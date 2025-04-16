@@ -1,0 +1,15 @@
+#### g. **`.gitignore`**:
+#Đảm bảo rằng bạn không đẩy các file không cần thiết vào Git, ví dụ như môi trường ảo, file build, hoặc các file nhạy cảm.
+#gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.db
+
+*.pdf
+*.xlsx
+.idea/
+#.ipynb_checkpoints/
+#debug/*.ipynb

@@ -423,6 +423,7 @@ find . -type d -empty -not -path "./.git/*" -exec touch {}/.gitkeep \;
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+.venv-*
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/
 
@@ -434,7 +435,14 @@ profile_default/
 ipython_config.py
 tesseract/*
 
-
-# Remove previous ipynb_checkpoints
-#   git rm -r .ipynb_checkpoints/
+#### g. **`.gitignore`**:
+#Đảm bảo rằng bạn không đẩy các file không cần thiết vào Git, ví dụ như môi trường ảo, file build, hoặc các file nhạy cảm.
+#gitignore
+*.pyo
+*.pyd
+.env
+*.db
+*.pdf
+*.xlsx
+.ipynb_checkpoints/
 

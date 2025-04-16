@@ -5,8 +5,10 @@ easia-red/
 │   ├── __init__.py
 │   ├── main.py               # Khởi tạo FastAPI và định nghĩa các endpoint
 │   ├── services/             # Logic xử lý trích xuất dữ liệu từ PDF
+│   │   ├── __init__.py # File này có thể để trống
 │   │   └── pdf_parser.py     # Module trích xuất văn bản từ file PDF
 │   ├── models/               # Các mô hình dữ liệu (ví dụ: Contract)
+│   │   ├── __init__.py # File này có thể để trống
 │   │   └── contract.py       # Mô hình dữ liệu của hợp đồng
 │   ├── requirements.txt      # Các thư viện cần thiết cho FastAPI
 │   └── Dockerfile            # Dockerfile để containerize FastAPI service
@@ -37,3 +39,6 @@ pip install -r requirements.txt
 ```bash
 uvicorn app.main:app --reload
 ```
+
+#
+

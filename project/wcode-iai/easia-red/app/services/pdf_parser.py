@@ -1,9 +1,14 @@
 import pdfplumber
+import io
 
-def extract_pdf_text(file):
-  """Trích xuất văn bản từ file PDF."""
-  with pdfplumber.open(file) as pdf:
-    full_text = ""
+from app.models.contract import extract_structured_data_from_text
+
+
+def parse_contract(file_bytes: bytes) -> dict:
+  text = ""
+  with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
     for page in pdf.pages:
-      full_text += page.extract_text()
-  return full_text
+      text += page.extract_text() + "\n"
+
+  contract_data = extract_structured_data_from_text(text)
+  return contract_data

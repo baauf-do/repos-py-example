@@ -1,21 +1,40 @@
-from fastapi import FastAPI, UploadFile, File
-from services.pdf_parser import extract_pdf_text
-from models.contract import Contract
+import datetime
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from app.services.pdf_parser import parse_contract
+# import uvicorn
 
-app = FastAPI()
+app = FastAPI(title="EASIA Contract Extractor API", description="Trích xuất thông tin hợp đồng từ file PDF")
 
-# Định nghĩa endpoint để nhận file PDF và trả về văn bản trích xuất
-@app.post("/extract_pdf/")
-async def extract_pdf(file: UploadFile = File(...)):
-  # Gọi dịch vụ để trích xuất văn bản từ file PDF
-  contract_text = extract_pdf_text(file.file)
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=["*"],
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"],
+)
 
-  # Tạo đối tượng hợp đồng (có thể lưu vào cơ sở dữ liệu nếu cần)
-  contract = Contract(contract_text=contract_text)
 
-  return {"extracted_text": contract.contract_text}
+@app.post("/extract-contract")
+async def extract_contract(file: UploadFile = File(...)):
+  if not file.filename.lower().endswith(".pdf") or file.content_type != "application/pdf":
+    raise HTTPException(status_code=400, detail="File không hợp lệ. Vui lòng upload file PDF.")
+
+  content = await file.read()
+  try:
+    result = parse_contract(content)
+    return JSONResponse(content=result)
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=f"Lỗi xử lý file: {str(e)}")
+
 
 # Định nghĩa endpoint để kiểm tra xem ứng dụng đang chạy
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+@app.get('/')
+def root():
+  t = datetime.datetime.now()
+  return {'Welcome to Easia-Red PDF Extractor - ': t}
+
+
+# if __name__ == '__main__':
+#   uvicorn.run(app, host='127.0.0.1', port=8085, log_level='info')

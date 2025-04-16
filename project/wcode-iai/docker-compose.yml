@@ -1,20 +1,36 @@
-# version: "3.9"
+version: "3.8"
 
 services:
-  fastapi-red:
+  easia-red:
     build:
-      context: ./easia-red
+      context: ./easia-red       # CHÍNH XÁC: Dockerfile nằm trong đây
+    volumes:
+      - ./easia-red:/app         # mount toàn bộ easia-red vào /app
+    environment:
+      - PYTHONPATH=/app
+    working_dir: /app/app        # 👈 nơi chứa main.py
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
 
-  fastapi-blue:
-    build:
-      context: ./easia-blue
+  jupyter:
+    image: jupyter/base-notebook
     ports:
-      - "8001:8001"
+      - "8888:8888"
+    volumes:
+      - ./easia-red/debug:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    restart: unless-stopped
 
-  netcore:
-    build:
-      context: ./easia
-    ports:
-      - "5000:80"
+#  fastapi-blue:
+#    build:
+#      context: ./easia-blue
+#    ports:
+#      - "8102:8102"
+
+#  netcore:
+#    build:
+#      context: ./easia
+#    ports:
+#      - "5000:80"

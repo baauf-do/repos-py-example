@@ -12,7 +12,6 @@
   "editor.tabSize": 2,
   "editor.guides.indentation": true,
   "workbench.list.multiSelectModifier": "alt",
-  "editor.defaultFormatter": "charliermarsh.ruff",
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -23,10 +22,9 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[python]": {
-    // "editor.defaultFormatter": "ms-python.black-formatter",
-    // "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.tabSize": 2,
-    "editor.insertSpaces": true
+    "editor.insertSpaces": true,
   },
   "eslint.workingDirectories": [
     {
@@ -260,8 +258,10 @@
     "dsadwac",
     "Dtos",
     "dùng",
+    "dừng",
     "dụng",
     "đúng",
+    "đứng",
     "duoc",
     "dược",
     "được",
@@ -316,6 +316,7 @@
     "GIÁM",
     "giảm",
     "gian",
+    "giản",
     "giang",
     "giao",
     "Giáp",
@@ -416,6 +417,7 @@
     "khac",
     "khác",
     "khach",
+    "Khách",
     "khai",
     "kháp",
     "khiển",
@@ -455,6 +457,7 @@
     "localdb",
     "localhistory",
     "Loggedout",
+    "lòng",
     "loopend",
     "lpep",
     "luon",
@@ -710,6 +713,8 @@
     "tanabata",
     "tăng",
     "tảng",
+    "taskkill",
+    "tasklist",
     "tedu",
     "teken",
     "tekens",

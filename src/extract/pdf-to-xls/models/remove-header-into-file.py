@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # Đọc file .xls
-xls_input_path = os.path.join("data", "thong_bao_dmhc.xls")
+xls_input_path = os.path.join("../data", "thong_bao_dmhc.xls")
 workbook = xlrd.open_workbook(xls_input_path)
 sheet = workbook.sheet_by_index(0)
 

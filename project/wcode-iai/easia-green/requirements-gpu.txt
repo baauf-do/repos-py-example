@@ -1,0 +1,39 @@
+# requirements-gpu.txt (CUDA 11.8 - phù hợp RTX 4060)
+
+# Core API
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+
+# OCR
+paddleocr==2.6.1.3
+# ⚠️ paddlepaddle-gpu phải cài riêng từ source chính thức trong setup.py
+# Không để dòng paddlepaddle-gpu ở đây vì PyPI không có post118
+
+# PDF processing
+PyMuPDF==1.20.2
+pdf2image==1.17.0
+
+# Image processing
+opencv-python-headless==4.9.0.80
+Pillow==10.2.0
+scikit-image==0.22.0
+
+# YOLOv8 + Torch (CUDA 11.8)
+torch==2.0.1+cu118
+torchvision==0.15.2+cu118
+ultralytics==8.1.24
+
+# Utility
+numpy==1.26.4
+regex==2023.12.25
+pandas==2.2.2
+
+# MRZ parsing (tùy chọn, nếu fallback OCR cần)
+passporteye==2.2.2
+
+# Chú ý:
+# Nếu pip chưa nhận ra torch cu118, hãy thêm:
+# -f https://download.pytorch.org/whl/torch_stable.html
+
+# Dùng file này khi phát hiện có GPU với CUDA 11.8
+# setup.py sẽ tự động chọn file này nếu máy có hỗ trợ GPU

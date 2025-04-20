@@ -1,42 +1,29 @@
-# xử lý vùng dữ liệu trong passport
-passporteye
+# requirements.txt (nằm ở thư mục gốc easia-green)
 
-# xử lý các dạng file cơ bản
-pdfplumber
-PyPDF2
-opencv-python
-python-docx
-pdf2image
+# Core API
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
 
-# xử lý hình ảnh
-paddleocr
+# OCR
+paddleocr==2.6.1.3
+paddlepaddle-gpu==2.6.2  # phù hợp CUDA 11.7, tùy driver có thể dùng post118
 
-# chỉ chọn 1 trong 2 dòng dưới:
-# paddlepaddle-gpu       # Uncomment nếu dùng GPU
-paddlepaddle==2.5.1       # CPU version
+# PDF processing
+PyMuPDF==1.20.2
+pdf2image==1.17.0
 
-# xử lý trong dataframe
-pandas
+# Image processing
+opencv-python-headless==4.9.0.80
+Pillow==10.2.0
+scikit-image==0.22.0
 
-# kết nối đến cơ sở dữ liệu
-pyodbc
-sqlalchemy
+# YOLOv8
+ultralytics==8.1.24
 
-# web
-flask
-jinja2
+# MRZ parsing
+passporteye==2.2.2
 
-# web api
-fastapi
-uvicorn
-
-# utils
-python-multipart
-# format và kiểm tra code
-ruff
-
-
-# dùng jupyter notebook
-jupyterlab
-jupyter
-ipykernel
+# Utility
+numpy==1.26.4
+regex==2023.12.25
+pandas==2.2.2  # Để xem dữ liệu trực tiếp trong notebook

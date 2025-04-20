@@ -1,0 +1,37 @@
+# xử lý PDF nâng cao & Excel
+pdf2image
+openpyxl
+
+# xử lý các dạng file cơ bản
+pdfplumber
+PyPDF2
+opencv-python
+python-docx
+
+# xử lý hình ảnh
+paddleocr
+
+# chỉ chọn 1 trong 2 dòng dưới:
+# paddlepaddle-gpu       # Uncomment nếu dùng GPU
+paddlepaddle==2.5.1       # CPU version
+
+# xử lý trong dataframe
+pandas
+
+# kết nối đến cơ sở dữ liệu
+pyodbc
+sqlalchemy
+
+# web
+flask
+jinja2
+
+# web api
+fastapi
+uvicorn
+
+# utils
+python-multipart
+
+# open ai free for local
+ollama

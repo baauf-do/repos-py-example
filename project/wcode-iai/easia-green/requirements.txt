@@ -1,0 +1,42 @@
+# xử lý vùng dữ liệu trong passport
+passporteye
+
+# xử lý các dạng file cơ bản
+pdfplumber
+PyPDF2
+opencv-python
+python-docx
+pdf2image
+
+# xử lý hình ảnh
+paddleocr
+
+# chỉ chọn 1 trong 2 dòng dưới:
+# paddlepaddle-gpu       # Uncomment nếu dùng GPU
+paddlepaddle==2.5.1       # CPU version
+
+# xử lý trong dataframe
+pandas
+
+# kết nối đến cơ sở dữ liệu
+pyodbc
+sqlalchemy
+
+# web
+flask
+jinja2
+
+# web api
+fastapi
+uvicorn
+
+# utils
+python-multipart
+# format và kiểm tra code
+ruff
+
+
+# dùng jupyter notebook
+jupyterlab
+jupyter
+ipykernel

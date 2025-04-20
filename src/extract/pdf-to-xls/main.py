@@ -1,10 +1,12 @@
 import pdfplumber
 import os
 import pandas as pd
+from datetime import datetime
 
 # Định nghĩa đường dẫn file
+dtnow = datetime.now()  # current date and time
 pdf_path = os.path.join("data", "thong bao dmhc 1.1.2025.pdf")
-xls_path = os.path.join("data", "thong_bao_dmhc_clean.xlsx")
+xls_path = os.path.join("data", f"thong_bao_dmhc_clean-{dtnow.strftime("%Y%m%d%H%M%S")}.xlsx")
 
 
 def extract_tables_from_pdf(pdf_path):
@@ -31,6 +33,10 @@ def save_to_xls(data, xls_path):
     header = df.iloc[0]  # Giả sử dòng đầu tiên là tiêu đề
     df_cleaned = df[~df.apply(lambda row: row.equals(header), axis=1)]
     df_cleaned = pd.concat([pd.DataFrame([header]), df_cleaned])  # Giữ lại tiêu đề
+    # Lặp qua các cột và thay thế \n trong các cột kiểu chuỗi
+    for col in df_cleaned.columns:
+      if df_cleaned[col].dtype == "object":  # Kiểm tra kiểu dữ liệu của cột
+        df_cleaned[col] = df_cleaned[col].str.replace(r"\n", " ", regex=True)
   else:
     df_cleaned = df
 

@@ -1,16 +1,17 @@
 # Structure of the project
 
 ```
-easia-blue/                 # FastAPI service 1 (ví dụ: xử lý hợp đồng PDF)
+easia-blue/                 # FastAPI service 1
 ├── app/                 # Thư mục chứa mã nguồn FastAPI
 │   ├── __init__.py
 │   ├── main.py          # File khởi tạo và định nghĩa API
 │   ├── services/        # Các module xử lý logic (ví dụ: trích xuất dữ liệu PDF)
 │   │   ├── __init__.py # File này có thể để trống
+│   │   ├── passport_parser.py
 │   │   └── pdf_parser.py
 │   ├── models/          # Các mô hình dữ liệu, có thể bao gồm các class để xử lý dữ liệu
 │   │   ├── __init__.py # File này có thể để trống
-│   │   └── contract.py
+│   │   └── process.py
 │   ├── requirements.txt # Các thư viện cần thiết cho FastAPI (pdfplumber, uvicorn, v.v.)
 ├── Dockerfile            # Dockerfile để containerize FastAPI service
 ├── README.md                 # Mô tả dịch vụ FastAPI

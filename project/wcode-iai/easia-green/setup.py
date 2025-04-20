@@ -4,7 +4,11 @@ import sys
 import platform
 from datetime import datetime
 
-LOG_FILE = "logs/setup.log"
+LOG_FILE = f"logs/setup{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
+
+# Kiểm tra xem có thư mục logs không, nếu không thì tạo mới
+if not os.path.exists("logs"):
+  os.makedirs("logs")
 
 
 def log(message):
@@ -21,13 +25,20 @@ def run(cmd, shell=True):
     sys.exit(result.returncode)
 
 
+def detect_gpu():
+  try:
+    import torch
+    return torch.cuda.is_available()
+  except ImportError:
+    return False
+
+
 def find_python_versions():
   possible_names = [
     "python", "python3", "py",
     "python3.7", "python3.8", "python3.9", "python3.10", "python3.11", "python3.12",
     "py -3.7", "py -3.8", "py -3.9", "py -3.10", "py -3.11", "py -3.12"
   ]
-
   found = {}
   for name in possible_names:
     try:
@@ -84,7 +95,6 @@ def main():
       log("⚠️ Nhập một số nguyên.")
 
   selected_cmd = list(versions.keys())[choice - 1]
-
   log(f"\n✅ Sử dụng Python: {selected_cmd}")
 
   # Tên thư mục môi trường ảo
@@ -108,12 +118,20 @@ def main():
   log("\n⬆️ Nâng cấp pip...")
   run([python_in_venv, "-m", "pip", "install", "--upgrade", "pip"])
 
-  # Cài đặt requirements nếu có
-  if os.path.exists("requirements.txt"):
-    log("\n📚 Cài đặt hoặc cập nhật requirements.txt...")
-    run([pip_exec, "install", "--upgrade", "-r", "requirements.txt"])
+  # Kiểm tra GPU: dùng torch nếu có, chọn requirements phù hợp
+  use_gpu = detect_gpu()
+  if use_gpu:
+    log("🔍 GPU được phát hiện. Sử dụng GPU cho cài đặt.")
   else:
-    log("⚠️ Không tìm thấy file requirements.txt, bỏ qua bước cài đặt thư viện.")
+    log("🔍 Không có GPU. Sử dụng CPU cho cài đặt.")
+
+  req_file = "requirements-gpu.txt" if use_gpu else "requirements.txt"
+  log(f"📚 Cài đặt thư viện từ {req_file} ({'GPU' if use_gpu else 'CPU'})")
+  run([pip_exec, "install", "-r", req_file, "-f", "https://download.pytorch.org/whl/torch_stable.html"])
+
+  if use_gpu:
+    log("🚀 Cài paddlepaddle-gpu riêng từ nguồn chính thức...")
+    run([pip_exec, "install", "paddlepaddle-gpu==2.5.2.post118", "-f", "https://www.paddlepaddle.org.cn/whl/mkl/avx/stable.html"])
 
   # Cài đặt Jupyter và ipykernel
   log("\n📦 Cài đặt Jupyter và ipykernel để sử dụng môi trường ảo trong Jupyter Notebook...")
@@ -123,6 +141,7 @@ def main():
   log("\n🔧 Đăng ký môi trường ảo làm kernel cho Jupyter...")
   run([python_in_venv, "-m", "ipykernel", "install", "--user", f"--name={venv_dir}", "--display-name", f"Python ({venv_dir})"])
 
+  log("✅ Hoàn tất cài đặt! Bạn có thể kích hoạt môi trường và bắt đầu sử dụng.")
   # Load biến môi trường nếu có
   load_dotenv()
 

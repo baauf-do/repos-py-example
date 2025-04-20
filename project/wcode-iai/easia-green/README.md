@@ -1,94 +1,259 @@
-# Structure of the project
+# 📄 Passport Reader API - EASIA GREEN
+
+Hệ thống trích xuất thông tin từ hộ chiếu (passport) từ ảnh và PDF, trả kết quả dưới dạng JSON. API có thể chạy độc lập, hỗ trợ Docker, dễ
+dàng tích hợp vào ứng dụng .NET Framework 4.8 hoặc bất kỳ hệ thống backend nào.
+
+---
+
+## 🚀 Mục tiêu
+
+- Tự động nhận diện và trích xuất thông tin MRZ từ ảnh hộ chiếu hoặc file PDF.
+- Hỗ trợ ảnh chụp kém chất lượng.
+- Có thể tích hợp vào hệ thống quản lý người dùng, nhập cảnh, CRM...
+- API dễ mở rộng (auth, logging, tracking...)
+
+---
+
+## 🧠 Công nghệ sử dụng
+
+| Công nghệ            | Mô tả                      |
+|----------------------|----------------------------|
+| Python 3.10          | Ngôn ngữ chính             |
+| FastAPI              | Xây dựng REST API          |
+| PaddleOCR            | OCR chính xác cao          |
+| YOLOv8 (Ultralytics) | Nhận diện vùng MRZ         |
+| OpenCV               | Xử lý ảnh                  |
+| pdf2image / PyMuPDF  | Xử lý PDF                  |
+| Docker               | Đóng gói và triển khai API |
+| pytest               | Kiểm thử tự động           |
+| PyTorch              | (GPU hỗ trợ CUDA 11.8)     |
+
+---
+
+## 🔄 Flow xử lý
+
+```text
+main.py
+  └── FastAPI khởi chạy app
+      └── /api/extract-passport (endpoints.py)
+            └── PassportService.process_passport()
+                  └── extract_passport_info() từ core/reader.py
+                        ├── Xử lý ảnh/pdf
+                        ├── Phát hiện MRZ (YOLOv8 hoặc OCR)
+                        ├── Trích xuất văn bản (PaddleOCR)
+                        └── Parse thông tin MRZ (mrz_parse)
+```
+
+## 📁 Cấu trúc thư mục
 
 ```
-easia-blue/                 # FastAPI service 1
-├── app/                 # Thư mục chứa mã nguồn FastAPI
-│   ├── __init__.py
-│   ├── main.py          # File khởi tạo và định nghĩa API
-│   ├── services/        # Các module xử lý logic (ví dụ: trích xuất dữ liệu PDF)
-│   │   ├── __init__.py # File này có thể để trống
-│   │   ├── passport_parser.py
-│   │   └── pdf_parser.py
-│   ├── models/          # Các mô hình dữ liệu, có thể bao gồm các class để xử lý dữ liệu
-│   │   ├── __init__.py # File này có thể để trống
-│   │   └── process.py
-│   ├── requirements.txt # Các thư viện cần thiết cho FastAPI (pdfplumber, uvicorn, v.v.)
-├── Dockerfile            # Dockerfile để containerize FastAPI service
-├── README.md                 # Mô tả dịch vụ FastAPI
-└── .gitignore                # Lọc các file không cần thiết khi dùng Git
-
-
-
-easia-blue/
-├── app/
-│   ├── main.py                # File chính để chạy ứng dụng
-│   ├── services/
-│   │   ├── __init__.py
-│   │   ├── pdf_processor.py   # Xử lý PDF (chuyển trang thành hình ảnh, OCR, DataFrame)
-│   ├── models/
-│   │   ├── __init__.py
-│   │   └── export_utils.py    # Xuất dữ liệu ra JSON, Excel
-│   └── __init__.py
-
-
-
+easia-green/
+├── app/                            # Ứng dụng chính
+│   ├── main.py                     # Entry point khởi chạy FastAPI
+│   ├── api/                        # Định nghĩa các route API
+│   ├── core/                       # Xử lý OCR, MRZ, preprocess...
+│   │   ├── mrz_detect.py           # Hàm chính điều phối toàn pipeline
+│   │   ├── mrz_detect.py           # Dò vùng MRZ bằng YOLO hoặc OCR
+│   │   ├── mrz_parse.py            # Parse MRZ text thành structured fields
+│   │   ├── preprocess.py           #  xử lý ảnh: resize, contrast, làm mượt, v.v.
+│   │   ├── pdf_utils.py            # chuyển PDF thành ảnh
+│   │   └── utils.py                # (tuỳ chọn – validate ngày, logging, helper nhỏ)
+│   ├── services/                   # Xử lý nghiệp vụ (dùng core + models)
+│   │   └── passport_services.py    # Xử lý nghiệp vụ passport
+│   ├── models/                     # Trained YOLOv8 models
+│   │   ├── yolov8_mrz.pt           # Model YOLOv8 đã train
+│   │   └── paddleocr/             # Model PaddleOCR
+│   │       ├── ocr_system/         # Model OCR
+│   │       ├── ocr_system.py        # Hàm chính gọi OCR
+│   │       └── ocr_system_config.py # Cấu hình cho OCR
+│   ├── test/                       # Unit test
+│   │   ├── test_mrz_detect.py        # Test dò vùng MRZ
+│   │   ├── test_mrz_parse.py         # Test parse MRZ
+│   │   ├── test_preprocess.py         # Test xử lý ảnh
+│   │   ├── test_pdf_utils.py          # Test chuyển PDF thành ảnh
+│   │   ├── test_utils.py              # Test các hàm tiện ích
+│   │   └── test_passport_services.py  # Test dịch vụ passport
+│   ├── requirements.txt            # Các thư viện phụ thuộc
+│   └── Dockerfile                  # Docker hóa ứng dụng
+│
+├── store/                          # Lưu dữ liệu test, ảnh input/output
+│   ├── input/
+│   └── output/
+│
+├── notebooks/                      # Jupyter notebook dùng để thử nghiệm
+│   └── demo_passport_reader.ipynb  # Demo cách sử dụng API
+│
+├── logs/                           # Lưu log hệ thống
+│   └── log_YYYYMMDD.log            # Log hệ thống
+│
+├── train/                          # Dùng để train mô hình YOLOv8 riêng
+│   ├── datasets/
+│   │   └── mrz/
+│   │       ├── images/
+│   │       │   ├── train/         # Ảnh huấn luyện
+│   │       │   └── val/           # Ảnh validation
+│   │       └── labels/
+│   │           ├── train/         # Nhãn YOLO tương ứng
+│   │           └── val/
+│   ├── mrz.yaml                   # Cấu hình cho YOLO
+│   └── train.py                   # Script huấn luyện
+│
+├── run_tests.py       # Script chạy toàn bộ test ✅
+│
+└── README.md
 ```
 
-# Chi tiết các thư mục và file trong cấu trúc:
+## 🔁 Luồng xử lý chính
 
-## easia-blue/
+```
+main.py → API endpoint → services → core (detect, OCR, parse)
+```
 
-- FastAPI services xử lý các hợp đồng từ PDF và DOCX.
-- app/: Chứa mã nguồn cho dịch vụ FastAPI.
-  - main.py: Là file chính của FastAPI, nơi bạn sẽ khai báo các route và xử lý các yêu cầu.
-  - services/: Chứa các module giúp xử lý logic (ví dụ: pdf_parser.py để trích xuất dữ liệu từ PDF và docx_parser.py để trích xuất dữ liệu
-    từ DOCX).
-  - models/: Chứa các mô hình dữ liệu để định nghĩa các cấu trúc dữ liệu bạn sử dụng trong API, chẳng hạn như mô hình hợp đồng.
-  - requirements.txt: Liệt kê các thư viện cần thiết như fastapi, uvicorn, pdfplumber, python-docx, ...
-  - Dockerfile: Định nghĩa cách containerize dịch vụ FastAPI.
+## ✅ Cách chạy test toàn bộ
 
-## chạy file setup.py đầu tiên
+```bash
+python run_tests.py
+```
 
-- nó là file khởi tạo môi trường ảo cho dự án
-- là file Setup environment for project tự động
-  - here folder local path of project
-  ```bash
-  cd project/wcode-iai/easia-blue
-  ```
-  - run -> lựa chọn python version -> done
-  ```bash
-  py setup.py
-  ```
+- Script sẽ chạy tất cả các test trong `app/test/`
+- Log kết quả và cảnh báo nếu thiếu file mẫu (`sample_passport.jpg`, `sample_passport.pdf`, ...)
 
-## với file .env
+> 📦 Đảm bảo bạn đã có các file mẫu test trong thư mục `store/input/` để tránh bị skip.
 
-- cấu hình trong đó
-- sử dụng python-dotenv để load biến môi trường từ file .env vào ứng dụng FastAPI.
+---
 
+---
 
+## ⚙️ Cách chạy local
 
-# flow - xử lý hơp đồng
-1. Nhận file hợp đồng từ người dùng qua API.
-2. Xác định loại file (PDF hoặc DOCX).
-3. Sử dụng các module tương ứng để trích xuất dữ liệu từ file.
-4. Xử lý dữ liệu đã trích xuất (ví dụ: lưu vào cơ sở dữ liệu, trả về cho người dùng, v.v.).
-5. Trả về kết quả cho người dùng qua API.
-6. Ghi log các hoạt động và lỗi (nếu có) để theo dõi và xử lý sau này.
-7. Kiểm tra và xử lý các lỗi có thể xảy ra trong quá trình trích xuất dữ liệu.
-8. Tối ưu hóa mã nguồn và cấu trúc thư mục để dễ dàng bảo trì và mở rộng trong tương lai.
-9. Thực hiện kiểm thử để đảm bảo rằng các chức năng hoạt động đúng và không có lỗi.
-10. Triển khai dịch vụ FastAPI lên môi trường sản xuất.
-11. Cung cấp tài liệu hướng dẫn sử dụng API cho người dùng.
-12. Theo dõi và bảo trì dịch vụ sau khi triển khai, bao gồm việc cập nhật mã nguồn, sửa lỗi và cải thiện hiệu suất.
+```bash
+cd app
+python -m venv .venv
+type .venv/Scripts/activate     # Windows
+source .venv/bin/activate       # Unix
+pip install -r requirements.txt
+python main.py
+```
 
-- ide
-  - sử dụng pycharm
-  - cài đặt các plugin cần thiết cho FastAPI và Python.
-  - cấu hình môi trường ảo trong PyCharm để dễ dàng quản lý các thư viện và phụ thuộc.
-  - sử dụng terminal tích hợp trong PyCharm để chạy các lệnh như `uvicorn` hoặc `docker` mà không cần rời khỏi IDE.
-  - sử dụng Git để quản lý mã nguồn và theo dõi các thay đổi trong dự án.
+> API sẽ chạy tại `http://localhost:8000/api/extract-passport`
 
-- ý tưởng thực hiện trích xuất hợp đồng để đưa vào database
-  - kiểm tra nội dung văn bản
-    - sử dụng các thư viện như pdfplumber hoặc python-docx để trích xuất văn bản từ file PDF hoặc DOCX.
-    - nếu văn bản không thể trích xuất được, có khả năng đó là trang trắng hoặc .
+---
+
+## 🐳 Chạy với Docker
+
+```bash
+cd app
+docker build -t easia-green-api .
+docker run -p 8000:8000 easia-green-api
+```
+
+---
+
+## 🧪 Gọi thử API
+
+```bash
+curl -X POST http://localhost:8000/api/extract-passport \
+  -F "file=@store/input/passport.jpg"
+```
+
+Kết quả trả về dạng JSON:
+
+```json
+{
+  "passport_number": "B1234567",
+  "surname": "NGUYEN",
+  "given_names": "VAN A",
+  "nationality": "VNM",
+  "date_of_birth": "1990-01-01",
+  "expiration_date": "2030-01-01",
+  "gender": "M"
+}
+```
+
+---
+
+## 🧠 Huấn luyện lại YOLOv8 cho MRZ
+
+1. Chuẩn bị dữ liệu:
+
+```
+train/datasets/mrz/
+├── images/train, val
+├── labels/train, val    # file .txt YOLO format
+```
+
+2. File `mrz.yaml`:
+
+```yaml
+path: ./datasets/mrz
+train: images/train
+val: images/val
+nc: 1
+names: [ "mrz" ]
+```
+
+3. Huấn luyện:
+
+```bash
+cd train
+yolo task=detect mode=train model=yolov8n.pt data=mrz.yaml epochs=100 imgsz=640
+```
+
+4. Sau huấn luyện, copy model tốt nhất vào app:
+
+```bash
+cp train/runs/detect/train/weights/best.pt app/models/yolov8_mrz.pt
+```
+
+---
+
+## 📌 Ghi chú
+
+- PaddleOCR hỗ trợ tốt cả ảnh scan, ảnh bị nghiêng hoặc mờ nhẹ.
+- MRZ được detect bằng PaddleOCR hoặc YOLO tùy vào cấu hình.
+- Mọi xử lý ảnh, detect, trích xuất đều có thể tinh chỉnh.
+- Các log xử lý được ghi tự động vào `logs/log_YYYYMMDD.log`
+- Dịch vụ nghiệp vụ được xử lý ở tầng `services/` tách biệt với `core/`
+- Có thể thêm auth middleware vào `api/endpoints.py`.
+
+---
+
+## ✅ Hướng dẫn sử dụng:
+
+Build và chạy container:
+docker compose up --build
+
+Truy cập API tại: http://localhost:8000
+Swagger UI:         http://localhost:8000/docs
+Kiểm tra log:       docker logs -f easia-green-api
+Kiểm tra container: docker ps
+
+## ✨ TODO mở rộng (tuỳ chọn)
+
+- [ ] Viết file `endpoints.py` xử lý API `/extract-passport`
+- [ ] Viết `reader.py` để điều phối pipeline (load ảnh, detect MRZ, OCR, parse)
+- [ ] Viết `mrz_detect.py`: PaddleOCR hoặc YOLO detect vùng MRZ
+- [ ] Viết `mrz_parse.py`: tách dòng MRZ và phân tích thành thông tin structured
+- [ ] Xử lý ảnh từ PDF trong `pdf_utils.py`
+- [ ] Viết `Dockerfile` cho app
+- [ ] Viết test mẫu cho pipeline chính
+- [ ] Tối ưu hóa pipeline xử lý ảnh mờ/nghiêng
+- [ ] Thêm kiểm thử đầu vào (validate file, định dạng ảnh, xử lý lỗi OCR)
+- [ ] Viết thêm unit test cho `services/passport_service.py`
+- [ ] Xử lý bất thường trong MRZ, fallback OCR nhiều vùng
+- [ ] Tích hợp phần xác thực (auth) hoặc phân quyền
+- [ ] Tách ảnh chân dung và crop vùng chữ ký
+- [ ] Tự động log hệ thống và gửi lỗi ra email/Slack
+- [ ] Tự động hóa đánh nhãn ảnh MRZ
+- [ ] Tối ưu inference multi-GPU
+- [ ] Tích hợp xác thực số hộ chiếu bằng checksum
+- [ ] Export model sang ONNX để deploy cross-platform
+-
+
+---
+
+# Authory
+
+🚀 *by Easia-Project teams!*
+**baauf**
+

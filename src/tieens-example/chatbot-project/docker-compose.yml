@@ -1,0 +1,9 @@
+services:
+  chatbot:
+    build: .
+    ports:
+      - "8101:8000"
+    volumes:
+      - .:/app
+    environment:
+      - OLLAMA_HOST=host.docker.internal

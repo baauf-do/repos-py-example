@@ -1,0 +1,18 @@
+path: C:/repos/vs-code/baauf-do/repos-py-example/project/wcode-iai/easia-green/train/datasets  # Tất cả dữ liệu nằm trong thư mục train/datasets
+
+train: images/train
+val: images/val
+
+names:
+  0: fullname
+  1: dob
+  2: sex
+  3: passportid
+  4: passportid2
+  5: nationality
+  6: pob
+  7: cmnd
+  8: date_of_issue
+  9: date_of_expiry
+  10: place_of_issue
+  11: mrz

@@ -4,7 +4,7 @@ import sys
 import platform
 from datetime import datetime
 
-LOG_FILE = f"logs/setup{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
+LOG_FILE = f"logs/setup{datetime.now().strftime('%Y%m%d')}.log"
 
 # Kiểm tra xem có thư mục logs không, nếu không thì tạo mới
 if not os.path.exists("logs"):

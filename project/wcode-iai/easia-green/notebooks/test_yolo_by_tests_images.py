@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 # Load model đã huấn luyện
-model_path = '../train/runs/passport_20250423_140913/weights/best.pt'
+model_path = '../train/runs/passport_20250423_170321/weights/best.pt'
 model = YOLO(model_path)
 
 # Ảnh cần nhận diện

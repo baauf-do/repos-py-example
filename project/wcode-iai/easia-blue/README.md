@@ -1,7 +1,11 @@
-# Structure of the project
+# easia-blue
+- trich xuat thong tin tu file pdf hop dong sang json
+- tu du lieu json cap nhat vao database
 
-```
-easia-blue/                 # FastAPI service 1 (ví dụ: xử lý hợp đồng PDF)
+## Structure of the project
+
+```bash
+easia-blue/                 # FastAPI service (ví dụ: xử lý hợp đồng PDF -> file .json)
 ├── app/                 # Thư mục chứa mã nguồn FastAPI
 │   ├── __init__.py
 │   ├── main.py          # File khởi tạo và định nghĩa API
@@ -11,31 +15,69 @@ easia-blue/                 # FastAPI service 1 (ví dụ: xử lý hợp đồn
 │   ├── models/          # Các mô hình dữ liệu, có thể bao gồm các class để xử lý dữ liệu
 │   │   ├── __init__.py # File này có thể để trống
 │   │   └── contract.py
-│   ├── requirements.txt # Các thư viện cần thiết cho FastAPI (pdfplumber, uvicorn, v.v.)
+│   └── store/
+│       ├── __init__.py # File này có thể để trống
+│       ├── input
+│       ├── output
+│       └── temp
+├── frontend/
+│   ├── static/
+│   └── templates/
+│       └── index.html
+├── models/
+├── services/
+├── store/
+│   ├── input/
+│   └── output/
+├── tests/
+├── uploads/
+├── .env
+├── requirements.txt # Các thư viện cần thiết cho FastAPI (pdfplumber, uvicorn, v.v.)
+├── setup.py
 ├── Dockerfile            # Dockerfile để containerize FastAPI service
+├── docker-compose.yml
 ├── README.md                 # Mô tả dịch vụ FastAPI
 └── .gitignore                # Lọc các file không cần thiết khi dùng Git
 
 
-
-easia-blue/
-├── app/
-│   ├── main.py                # File chính để chạy ứng dụng
-│   ├── services/
-│   │   ├── __init__.py
-│   │   ├── pdf_processor.py   # Xử lý PDF (chuyển trang thành hình ảnh, OCR, DataFrame)
-│   ├── models/
-│   │   ├── __init__.py
-│   │   └── export_utils.py    # Xuất dữ liệu ra JSON, Excel
-│   └── __init__.py
-
-
+```
+## dua vao cau truc thu muc tao cac file va folder tuong ung bang bash
+- Chạy các lệnh sau trong terminal:
+```bash
+mkdir -p easia-blue/app/services
+mkdir -p easia-blue/app/models
+mkdir -p easia-blue/app/store/input
+mkdir -p easia-blue/app/store/output
+mkdir -p easia-blue/app/store/temp
+mkdir -p easia-blue/frontend/static
+mkdir -p easia-blue/frontend/templates
+mkdir -p easia-blue/models
+mkdir -p easia-blue/services
+mkdir -p easia-blue/store/input
+mkdir -p easia-blue/store/output
+mkdir -p easia-blue/tests
+mkdir -p easia-blue/uploads
+touch easia-blue/app/__init__.py
+touch easia-blue/app/main.py
+touch easia-blue/app/services/__init__.py
+touch easia-blue/app/services/pdf_parser.py
+touch easia-blue/app/models/__init__.py
+touch easia-blue/app/models/contract.py
+touch easia-blue/app/store/__init__.py
+touch easia-blue/frontend/templates/index.html
+touch easia-blue/.env
+touch easia-blue/requirements.txt
+touch easia-blue/setup.py
+touch easia-blue/Dockerfile
+touch easia-blue/docker-compose.yml
+touch easia-blue/README.md
+touch easia-blue/.gitignore
 
 ```
 
-# Chi tiết các thư mục và file trong cấu trúc:
+## Chi tiết các thư mục và file trong cấu trúc:
 
-## easia-blue/
+### easia-blue/
 
 - FastAPI services xử lý các hợp đồng từ PDF và DOCX.
 - app/: Chứa mã nguồn cho dịch vụ FastAPI.
@@ -46,7 +88,7 @@ easia-blue/
   - requirements.txt: Liệt kê các thư viện cần thiết như fastapi, uvicorn, pdfplumber, python-docx, ...
   - Dockerfile: Định nghĩa cách containerize dịch vụ FastAPI.
 
-## chạy file setup.py đầu tiên
+### chạy file setup.py đầu tiên
 
 - nó là file khởi tạo môi trường ảo cho dự án
 - là file Setup environment for project tự động
@@ -59,14 +101,14 @@ easia-blue/
   py setup.py
   ```
 
-## với file .env
+### với file .env
 
 - cấu hình trong đó
 - sử dụng python-dotenv để load biến môi trường từ file .env vào ứng dụng FastAPI.
 
 
 
-# flow - xử lý hơp đồng
+## flow - xử lý hơp đồng
 1. Nhận file hợp đồng từ người dùng qua API.
 2. Xác định loại file (PDF hoặc DOCX).
 3. Sử dụng các module tương ứng để trích xuất dữ liệu từ file.

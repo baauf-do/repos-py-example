@@ -4,7 +4,8 @@ fastapi==0.110.0
 uvicorn[standard]==0.29.0
 # OCR
 paddleocr==2.6.1.3
-paddlepaddle-gpu==2.6.2  # phù hợp CUDA 11.7, tùy driver có thể dùng post118
+paddlepaddle==2.6.2  # phù hợp CUDA 11.7, tùy driver có thể dùng post118
+#paddlepaddle-gpu==2.6.2  # phù hợp CUDA 11.7, tùy driver có thể dùng post118
 # PDF processing
 PyMuPDF==1.20.2
 pdf2image==1.17.0
@@ -26,8 +27,9 @@ Albumentations==1.3.0  # Specify version for consistency
 imgaug==0.4.0  # Specify version for consistency
 scikit-learn==1.2.2  # Specify version for consistency
 matplotlib==3.7.1  # Specify version for consistency
-torch
+torch==2.5.1
 torchvision
 torchaudio
 faker==18.0.0  # Specify version for consistency
 tqdm==4.65.0  # Specify version for consistency
+labelImg==1.8.6  # Specify version for consistency

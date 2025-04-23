@@ -3,8 +3,8 @@ from ultralytics import YOLO
 from pathlib import Path
 from datetime import datetime
 import argparse
-import yaml
 import matplotlib.pyplot as plt
+# import yaml
 
 # ---------- Cấu hình mặc định ----------
 DEFAULT_MODEL = 'yolov8n.pt'
@@ -17,7 +17,7 @@ DEFAULT_LR = 0.001
 
 def plot_metrics_bar(metrics_dict, save_path):
   keys = ['precision', 'recall', 'map50', 'map']
-  values = [getattr(metrics_dict, k) for k in keys]
+  values = [metrics_dict[k] for k in keys]
 
   plt.figure(figsize=(8, 5))
   plt.bar(keys, values)

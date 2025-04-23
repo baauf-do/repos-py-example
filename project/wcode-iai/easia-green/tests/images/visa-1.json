@@ -1,0 +1,55 @@
+{
+  "image": "visa-1.jpg",
+  "detections": [
+    {
+      "label": "mrz",
+      "confidence": 0.4285,
+      "bbox": [
+        17.04,
+        246.49,
+        410.26,
+        289.17
+      ]
+    },
+    {
+      "label": "passportid2",
+      "confidence": 0.3653,
+      "bbox": [
+        20.41,
+        271.42,
+        88.69,
+        289.04
+      ]
+    },
+    {
+      "label": "place_of_issue",
+      "confidence": 0.304,
+      "bbox": [
+        323.13,
+        221.9,
+        405.07,
+        238.72
+      ]
+    },
+    {
+      "label": "dob",
+      "confidence": 0.2616,
+      "bbox": [
+        141.16,
+        141.45,
+        192.96,
+        154.95
+      ]
+    },
+    {
+      "label": "dob",
+      "confidence": 0.2573,
+      "bbox": [
+        139.85,
+        97.36,
+        172.29,
+        109.16
+      ]
+    }
+  ]
+}

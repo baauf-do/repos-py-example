@@ -3,7 +3,7 @@ pdf2image
 openpyxl
 
 # xử lý các dạng file cơ bản
-pdfplumber
+pdfplumber==0.10.2
 PyPDF2
 opencv-python
 python-docx
@@ -27,8 +27,8 @@ flask
 jinja2
 
 # web api
-fastapi
-uvicorn
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
 
 # utils
 python-multipart

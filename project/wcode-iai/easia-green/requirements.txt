@@ -10,6 +10,7 @@ PyMuPDF==1.20.2
 pdf2image==1.17.0
 # Image processing
 opencv-python-headless==4.9.0.80
+opencv-contrib-python
 Pillow==10.2.0
 scikit-image==0.22.0
 # YOLOv8
@@ -21,12 +22,12 @@ numpy==1.26.4
 regex==2023.12.25
 pandas==2.2.2  # Để xem dữ liệu trực tiếp trong notebook
 pytest==7.2.0  # Specify version for consistency
-PyTorch==2.0.1+cu117  # Specify version for consistency
-torchvision==0.15.2+cu117  # Specify version for consistency
 Albumentations==1.3.0  # Specify version for consistency
 imgaug==0.4.0  # Specify version for consistency
 scikit-learn==1.2.2  # Specify version for consistency
 matplotlib==3.7.1  # Specify version for consistency
-torch==2.0.1+cu117  # Specify version for consistency
+torch
+torchvision
+torchaudio
 faker==18.0.0  # Specify version for consistency
 tqdm==4.65.0  # Specify version for consistency

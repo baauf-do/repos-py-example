@@ -1,7 +1,7 @@
 # app/core/preprocess.py
 import cv2
 import numpy as np
-from core.utils import log_debug
+from app.utils.utils_logging import log_debug
 
 
 def preprocess_image(image: np.ndarray) -> np.ndarray:

@@ -1,5 +1,5 @@
 ﻿# app/test/test_utils.py
-from app.core.utils import is_valid_date
+from app.utils.utils_valid import is_valid_date
 
 
 def test_valid_date():

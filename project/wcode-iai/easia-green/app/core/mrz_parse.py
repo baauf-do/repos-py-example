@@ -4,7 +4,7 @@
 # Chuyển đổi ngày tháng sang định dạng YYYY-MM-DD
 import re
 from typing import Optional, Dict
-from core.utils import log_debug
+from app.utils.utils_logging import log_debug
 
 
 def parse_mrz_text(mrz_text: str) -> Optional[Dict]:
@@ -14,7 +14,7 @@ def parse_mrz_text(mrz_text: str) -> Optional[Dict]:
   """
   log_debug("📄 Bắt đầu phân tích MRZ text...", level="INFO")
   lines = mrz_text.strip().splitlines()
-  if len(lines) != 2 or not all(len(l) >= 40 for l in lines):
+  if len(lines) != 2 or not all(len(l) >= 40 for l in lines):  # noqa: E741
     log_debug("❌ MRZ không đúng định dạng TD3 (2 dòng, >=40 ký tự mỗi dòng)", level="WARNING")
     return None
 

@@ -5,11 +5,11 @@
 # Tách biệt phần quản lý model khỏi logic nhận diện MRZ
 # Chuẩn hóa và dễ mở rộng nếu sau này bạn có nhiều model hơn
 import numpy as np
-import cv2
+import cv2  # noqa: F401
 from typing import Optional
 # from ultralytics import YOLO
-from models.utils import load_yolo_model
-from core.utils import log_debug
+from app.models.utils import load_yolo_model
+from app.utils.utils_logging import log_debug
 
 # Load YOLO model qua layer models/utils
 YOLO_MODEL_PATH = "app/models/yolov8_mrz.pt"

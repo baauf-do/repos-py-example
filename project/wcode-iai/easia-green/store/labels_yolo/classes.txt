@@ -1,0 +1,12 @@
+fullname
+dob
+sex
+passportid
+passportid2
+nationality
+pob
+cmnd
+date_of_issue
+date_of_expiry
+place_of_issue
+mrz

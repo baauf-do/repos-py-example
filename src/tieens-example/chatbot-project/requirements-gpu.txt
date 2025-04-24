@@ -3,4 +3,3 @@ uvicorn[standard]
 pandas
 openai
 requests
-gradio # giao dien cho chatbot fastapi

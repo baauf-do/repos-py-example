@@ -1,9 +1,50 @@
 services:
   chatbot:
     build: .
+    depends_on:
+    - ollama
     ports:
       - "8101:8000"
     volumes:
       - .:/app
+      - chatbot_data:/app/data
     environment:
-      - OLLAMA_HOST=host.docker.internal
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434 # Thêm biến môi trường cho cổng OLLAMA
+      - OLLAMA_API_URL=http://ollama:11434/api/generate # Thêm biến môi trường cho URL API
+      - OLLAMA_TIMEOUT=30 # Thêm biến môi trường cho thời gian chờ
+      - OLLAMA_RETRY=3 # Thêm biến môi trường cho số lần thử lại khi gọi API
+      - OLLAMA_BACKOFF=2 # Thêm biến môi trường cho thời gian chờ giữa các lần thử lại
+      - OLLAMA_LOG_LEVEL=info # Thêm biến môi trường cho mức độ log
+      - OLLAMA_MAX_CONNECTIONS=5 # Thêm biến môi trường cho số kết nối tối đa
+    networks:
+      default:
+
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh       # Mount script khởi động vào container
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_MODELS=/root/.ollama/models
+    tty: true
+    entrypoint: ["/bin/bash", "/entrypoint.sh"]  # ✅ chạy script khởi động
+    networks:
+      default:
+
+
+volumes:
+  chatbot_data:
+    driver: local
+  ollama_data:
+    driver: local
+
+networks:
+  default:
+    name: tieens_network
+    driver: bridge

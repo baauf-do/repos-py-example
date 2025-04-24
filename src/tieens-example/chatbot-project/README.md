@@ -92,3 +92,12 @@ curl -X POST http://localhost:8000/api/chat \
 ## 📌 Ghi chú
 - Có thể thay Ollama bằng Claude hoặc GPT bằng cách chỉnh `chatbot.py`
 - Đảm bảo file `data.xlsx` tồn tại để tránh lỗi khi load dữ liệu.
+
+## Docker
+- di chuyen den thu luc chua file docker-compose.
+- chay docker-compose
+```docker-compose -f docker-compose.yml up -d --remove-orphans```
+- kiem tra llama da duoc cai chua
+```docker exec -it ollama ollama list```
+- cai dat llama
+```docker exec -it ollama ollama run llama3.2```

@@ -440,7 +440,7 @@ tesseract/*
 #gitignore
 *.pyo
 *.pyd
-.env
+#.env
 *.db
 *.pdf
 *.xlsx

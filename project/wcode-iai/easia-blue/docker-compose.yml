@@ -1,0 +1,13 @@
+﻿version: "3.9"
+
+services:
+  easia-blue:
+    build: .
+    container_name: easia-blue-app
+    ports:
+      - "8901:8901"
+    volumes:
+      - .:/app
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8901

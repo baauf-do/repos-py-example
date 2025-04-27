@@ -1,4 +1,5 @@
 # easia-blue
+
 - trich xuat thong tin tu file pdf hop dong sang json
 - tu du lieu json cap nhat vao database
 
@@ -41,8 +42,11 @@ easia-blue/                 # FastAPI service (ví dụ: xử lý hợp đồng 
 
 
 ```
+
 ## dua vao cau truc thu muc tao cac file va folder tuong ung bang bash
+
 - Chạy các lệnh sau trong terminal:
+
 ```bash
 mkdir -p easia-blue/app/services
 mkdir -p easia-blue/app/models
@@ -106,9 +110,8 @@ touch easia-blue/.gitignore
 - cấu hình trong đó
 - sử dụng python-dotenv để load biến môi trường từ file .env vào ứng dụng FastAPI.
 
-
-
 ## flow - xử lý hơp đồng
+
 1. Nhận file hợp đồng từ người dùng qua API.
 2. Xác định loại file (PDF hoặc DOCX).
 3. Sử dụng các module tương ứng để trích xuất dữ liệu từ file.

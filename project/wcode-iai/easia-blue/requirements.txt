@@ -1,6 +1,15 @@
-# xử lý PDF nâng cao & Excel
-pdf2image
-openpyxl
+# requirements-gpu.txt (CUDA 11.8 - phù hợp RTX 4060)
+
+# Core API and UI
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+openai
+requests
+gradio # giao dien cho chatbot fastapi
+
+# WEB
+# flask
+# jinja2
 
 # xử lý các dạng file cơ bản
 pdfplumber==0.10.2
@@ -8,12 +17,23 @@ PyPDF2
 opencv-python
 python-docx
 
-# xử lý hình ảnh
-paddleocr
+# xử lý PDF nâng cao & Excel
+pdf2image
+openpyxl
+
+# Image processing
+opencv-python-headless==4.9.0.80
+opencv-contrib-python
+Pillow==10.2.0
+scikit-image==0.22.0
+scikit-image==0.22.0
+
+# OCR
+paddleocr==2.6.1.3
 
 # chỉ chọn 1 trong 2 dòng dưới:
-# paddlepaddle-gpu       # Uncomment nếu dùng GPU
-paddlepaddle==2.5.1       # CPU version
+paddlepaddle-gpu       # Uncomment nếu dùng GPU version
+# paddlepaddle==2.5.1       # Uncomment nếu dùng CPU version
 
 # xử lý trong dataframe
 pandas
@@ -22,16 +42,23 @@ pandas
 pyodbc
 sqlalchemy
 
-# web
-flask
-jinja2
 
-# web api
-fastapi==0.110.0
-uvicorn[standard]==0.29.0
+# YOLOv8 + Torch (CUDA 11.8)
+torch==2.0.1+cu118
+torchvision==0.15.2+cu118
+ultralytics==8.1.24
 
 # utils
 python-multipart
+numpy==1.26.4
+regex==2023.12.25
+pandas==2.2.2
+Albumentations==1.3.0
+imgaug==0.4.0
+faker==18.0.0
+tqdm==4.65.0
+labelImg==1.8.6
+python-dotenv
 
 # open ai free for local
 ollama

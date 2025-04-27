@@ -1,12 +1,22 @@
+from fastapi import FastAPI
 import os
-from services.pdf_processor import PDFProcessor
-from models.export_utils import text_to_dataframe, export_to_json, export_to_excel
+from app.services.pdf_processor import PDFProcessor
+from app.models.export_utils import text_to_dataframe, export_to_json, export_to_excel
 from datetime import datetime
+from fastapi.responses import JSONResponse
 
-dtnow = datetime.now()  # current date and time
+dtnow = datetime.now()
+
+app = FastAPI()
 
 
-def main():
+@app.get("/")
+def read_root():
+  return {"message": "Hello World"}
+
+
+@app.post("/process-pdf/")
+def process_pdfs():
   input_dir = "store/input"
   output_dir = "store/output"
   temp_dir = "store/temp"
@@ -16,27 +26,26 @@ def main():
 
   processor = PDFProcessor(input_dir, temp_dir)
 
+  results = []
   for file_name in os.listdir(input_dir):
     if file_name.endswith(".pdf"):
       pdf_path = os.path.join(input_dir, file_name)
       print(f"Đang xử lý file: {file_name}")
 
-      # Tùy chọn phương pháp xử lý
-      method = "text"  # Hoặc "image"
+      method = "text"  # or "image"
       text = processor.process_pdf(pdf_path, method=method)
 
-      # Chuyển văn bản thành DataFrame
       df = text_to_dataframe(text)
 
-      print(df)
-      # Xuất dữ liệu
       json_path = os.path.join(output_dir, f"{os.path.splitext(file_name)[0]}-{dtnow.strftime('%Y%m%d%H%M%S')}.json")
       excel_path = os.path.join(output_dir, f"{os.path.splitext(file_name)[0]}-{dtnow.strftime('%Y%m%d%H%M%S')}.xlsx")
       export_to_json(df, json_path)
       export_to_excel(df, excel_path)
 
-      print(f"Đã xuất dữ liệu: {json_path}, {excel_path}")
+      results.append({
+        "file": file_name,
+        "json_output": json_path,
+        "excel_output": excel_path
+      })
 
-
-if __name__ == "__main__":
-  main()
+  return JSONResponse(content={"results": results})

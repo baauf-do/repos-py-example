@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 
 
 def text_to_dataframe(text):
@@ -12,19 +11,22 @@ def text_to_dataframe(text):
   return pd.DataFrame({"Content": lines})
 
 
-def export_to_json(df, output_path):
+def export_to_json(data: dict, output_path: str):
   """
   Xuất DataFrame ra file JSON.
-  :param df: Pandas DataFrame.
+  :param dict: Pandas DataFrame.
   :param output_path: Đường dẫn file JSON.
   """
-  df.to_json(output_path, orient="records", force_ascii=False)
+  import json
+  with open(output_path, "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=4)
 
 
-def export_to_excel(df, output_path):
+def export_to_excel(data: dict, output_path: str):
   """
   Xuất DataFrame ra file Excel.
-  :param df: Pandas DataFrame.
+  :param dict: Pandas DataFrame.
   :param output_path: Đường dẫn file Excel.
   """
+  df = pd.DataFrame([data])
   df.to_excel(output_path, index=False)

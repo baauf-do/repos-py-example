@@ -11,7 +11,7 @@
 
 # 2. 🏗️ Cấu trúc tổng thể dự án
 
-```pwsh
+```
    easia-blue/
    │
    ├── app/
@@ -24,13 +24,20 @@
    │   │       ├── __init__.py
    │   │       ├── upload.py         # API: upload file PDF
    │   │       ├── extract.py        # API: extract data
+   │   │       ├── extract.py        # API: get all files in upload folder
    │   │       ├── database.py       # API: push JSON vào SQL Server
    │   │       └── status.py         # API: kiểm tra server
    │   │
-   │   ├── core/                     # Cấu hình hệ thống
+   │   ├── config/                   # Cấu hình hệ thống
    │   │   ├── __init__.py
    │   │   ├── config.py             # Đọc biến môi trường từ .env
    │   │   └── database.py           # Kết nối SQL Server
+   │   │
+   │   ├── core/                     # Modular core: xử lý extract chi tiết theo text/scan/mixed – tuyệt vời
+   │   │   ├── extract_text_only.py
+   │   │   ├── extract_scan_only.py
+   │   │   ├── extract_mixed.py
+   │   │   └── __init__.py
    │   │
    │   ├── services/                 # Xử lý nghiệp vụ
    │   │   ├── __init__.py
@@ -47,6 +54,9 @@
    │   │
    │   └── utils/                    # Các hàm tiện ích
    │       ├── __init__.py
+   │       ├── logging_utils.py         # Quản lý cấu hình logging + log_debug
+   │       ├── middleware_logging.py    # Middleware log request/response
+   │       ├── decorator_logging.py     # Decorator log thời gian thực thi
    │       └── file_utils.py         # Kiểm tra file, move file, validate file
    │
    ├── store/                        # File vận hành trong runtime
@@ -72,8 +82,85 @@
    ├── Dockerfile                     # Docker build image
    ├── docker-compose.yml             # Docker-compose service
    ├── README.md                       # Tài liệu hướng dẫn
+   ├── LoggingSetup.md                # Tài liệu hướng dẫn cai dat
+   ├── README_API.md                   # Tài liệu hướng dẫn api
    └── PLAN.md                         # File kế hoạch phát triển
 ```
+
+📋 Chi tiết cấu trúc:
+
+| Mục                                                     | Nhận xét                                                                                      |
+|---------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| app/                                                    | Rất gọn: tất cả code logic nằm gọn trong app/                                                 |
+| api/endpoints/                                          | Tách endpoint rõ ràng, mỗi file 1 nghiệp vụ                                                   |
+| config/                                                 | Đúng chuẩn: config.py (env loader) và database.py (kết nối DB) để riêng                       |
+| core/                                                   | Modular core: xử lý extract chi tiết theo text/scan/mixed – tuyệt vời                         |
+| services/                                               | Business logic tách riêng (PDFProcessor, YOLODetector, OCRReader...) đúng chuẩn Service Layer |
+| models/                                                 | Đúng mô hình domain: schema định nghĩa cấu trúc dữ liệu                                       |
+| utils/                                                  | Tiện ích chung: log, middleware, decorator, file_utils rất gọn                                |
+| store/, upload/, train/, test/                          | Rõ folder runtime, dữ liệu lưu tách biệt                                                      |
+| Các file .env, setup.py, Dockerfile, docker-compose.yml | Đầy đủ, sẵn sàng production                                                                   |
+| README.md, PLAN.md, LoggingSetup.md, README_API.md      | Có tài liệu đầy đủ cho dev/frontend/devops – cực kỳ chuyên nghiệp                             |
+
+```pwsh
+
+              [ Client (Frontend, Postman, App) ]
+                          ↓
+                    [ FastAPI Server ]
+                          ↓
+┌────────────────────────────────────────────────────────────────────┐
+│                             app/                                   │
+│                                                                    │
+│ ┌───────────┬──────────────┬──────────────┬──────────────────────┐ │
+│ │  api/     │  services/   │    core/     │       models/        │ │
+│ │ (Routes)  │ (Business)   │ (Core logic) │  (Schemas & Export)  │ │
+│ └───────────┴──────────────┴──────────────┴──────────────────────┘ │
+│                                                                    │
+│ Configs: config/config.py, config/database.py                      │
+│ Utils: middleware_logging.py, decorator_logging.py, file_utils.py  │
+└────────────────────────────────────────────────────────────────────┘
+                          ↓
+                [ store/input/ ]
+                [ store/output/ ]
+                [ store/temp/ ]
+                [ upload/, train/, test/ ]
+
+                          ↓
+                [ Database SQL Server ]
+
+```
+
+| Thành phần          | Chức năng                                                              |
+|---------------------|------------------------------------------------------------------------|
+| Client              | Frontend App, Mobile App hoặc dùng Postman test API                    |
+| FastAPI Server      | Uvicorn chạy server API                                                |
+| api/                | Định nghĩa các endpoint (upload, extract, push-db, status, files)      |
+| services/           | Xử lý nghiệp vụ: PDFProcessor, YOLO detect, OCR reader, ContractParser |
+| core/               | Các module phân tích file (text-only, scan-only, mixed)                |
+| models/             | Định nghĩa schema dữ liệu + export JSON/Excel                          |
+| config/             | Load biến môi trường .env, kết nối database                            |
+| utils/              | Middleware log request, Decorator đo thời gian, Helper file_utils      |
+| store/              | Lưu file PDF upload, JSON kết quả, file tạm                            |
+| Database SQL Server | Lưu kết quả JSON đã phân tích                                          |
+
+### 🎯 Dòng chảy chính của dữ liệu:
+1. Người dùng upload file PDF ➔ /api/upload/
+2. Server kiểm tra loại PDF (text-only, scan-only, mixed)
+3. Điều hướng tới module xử lý tương ứng:
+   - core/extract_text_only.py
+   - core/extract_scan_only.py
+   - core/extract_mixed.py
+4. Kết quả phân tích text ➔ parse JSON theo schema
+5. Lưu JSON/Excel vào store/output/
+6. Nếu yêu cầu ➔ Đẩy dữ liệu vào SQL Server ➔ /api/push-db/
+7. Ghi log toàn bộ quá trình vào folder logs/
+
+### 📚 Ưu điểm của kiến trúc này:
+✅ Mở rộng dễ: thêm API mới, module mới không ảnh hưởng code cũ.
+✅ Dev team chia task dễ: mỗi module code riêng biệt, độc lập.
+✅ Quản lý logs, error tracking chuẩn production.
+✅ Có thể dễ dàng CI/CD và scaling hệ thống.
+✅ Chuẩn hóa đường dẫn file, tài liệu rõ ràng.
 
 # 3. 🧠 Flow xử lý file PDF
 
@@ -114,6 +201,8 @@
 11. ⬜Viết tài liệu hướng dẫn sử dụng (README)
 12. ⬜Viết script hỗ trợ train YOLO nhanh (nếu cần)
 13. ⬜ - nếu văn bản có thể trích xuất được, tiếp tục xử lý.
+14. ⬜ Log sang hệ thống ngoài (ELK Stack, Grafana Loki...)
+15. ⬜ Gửi cảnh báo khi lỗi nặng (ERROR) bằng email hoặc Slack
 
 - kiểm tra định dạng file
   - sử dụng các thư viện như python-magic hoặc mimetypes để xác định loại file (PDF hoặc DOCX).
@@ -168,6 +257,47 @@ Mixed ➔ Combine cả 2 ➔ Parse JSON.
 Kết quả JSON sau xử lý sẽ được lưu vào store/output/.
 
 ## 4️⃣ Xử lý chính trong các Service Layer
+
+# 8. 📊 Logging
+
+- Middleware: đã tự động log tất cả request/response rồi
+- Decorator log_execution_time:
+  - Áp dụng thêm vào các method bên trong các service classes (pdf_processor.py, yolo_detector.py, ocr_reader.py, contract_parser.py,
+    contract_extractor.py...).
+  - Giúp log tự động thời gian thực thi từng xử lý (ví dụ: thời gian detect vùng, OCR text, parse hợp đồng...).
+
+# 9. Sơ đồ Modular Pipeline easia-blue
+
+```pwsh
+[ Upload API ]
+      ↓
+[ Check PDF Type ] -> text / scan / mixed
+      ↓
++------------------+------------------+------------------+
+|                  |                  |                  |
+|                  |                  |                  |
+v                  v                  v
+[extract_text_only] [extract_scan_only] [extract_mixed]
+|                  |                  |
+v                  v                  v
+[Parsed Contract Data (JSON)]
+          ↓
+[ Push to Database API ]
+```
+
+Giải thích sơ đồ:
+
+Người dùng upload file.
+
+Server check loại file (text/scan/mixed).
+
+Điều hướng tới module extract phù hợp (ExtractTextOnly, ExtractScanOnly, ExtractMixed).
+
+Parse data ra JSON chuẩn.
+
+Đẩy vào Database SQL Server nếu cần.
+
+✅ Sạch luồng, rõ module, dễ mở rộng thêm pipeline sau này (ví dụ: multi-lang OCR, version 2 contract rules, ...).
 
 # 📄 Kết luận
 

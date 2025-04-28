@@ -32,8 +32,8 @@ scikit-image==0.22.0
 paddleocr==2.6.1.3
 
 # chỉ chọn 1 trong 2 dòng dưới:
-paddlepaddle-gpu       # Uncomment nếu dùng GPU version
-# paddlepaddle==2.5.1       # Uncomment nếu dùng CPU version
+# paddlepaddle-gpu       # Uncomment nếu dùng GPU version
+paddlepaddle==2.5.1       # Uncomment nếu dùng CPU version
 
 # xử lý trong dataframe
 pandas
@@ -61,4 +61,4 @@ labelImg==1.8.6
 python-dotenv
 
 # open ai free for local
-ollama
+# ollama

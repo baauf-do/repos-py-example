@@ -1,0 +1,13 @@
+﻿version: "3.9"
+
+services:
+  easia-blue:
+    environment:
+      ENV: production
+    command: >
+      uvicorn app.main:app --host 0.0.0.0 --port 80 --workers 4
+    volumes:
+      - ./store:/app/store
+      - ./logs:/app/logs
+    ports:
+      - "80:80"

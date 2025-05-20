@@ -1,30 +1,53 @@
-FROM python:3.10-slim
+# =========================================
+# Stage 1: Build base image + install deps
+# =========================================
+FROM python:3.10-slim AS builder
 
-# 1. Cài các thư viện cơ bản
-RUN apt-get update && apt-get install -y \
-    gcc g++ unixodbc-dev libpq-dev curl \
-    logrotate cron \
-    && rm -rf /var/lib/apt/lists/*
+# Cài các thư viện hệ thống cần thiết
+RUN apt-get update && apt-get install -y gcc libpq-dev unixodbc-dev curl && rm -rf /var/lib/apt/lists/*
 
-# 2. Thiết lập thư mục làm việc
+# Tạo thư mục làm việc
 WORKDIR /app
 
-# 3. Copy toàn bộ code vào container
-COPY . .
+# Copy requirements
+COPY requirements.txt .
 
-# 4. Cài thư viện Python
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Tạo virtualenv riêng biệt trong build image
+RUN python -m venv /venv && \
+    /venv/bin/pip install --upgrade pip && \
+    /venv/bin/pip install -r requirements.txt
 
-# 5. Tạo file cronjob cho logrotate
-RUN echo "0 0 * * * /usr/sbin/logrotate /etc/logrotate.d/easia-blue" > /etc/cron.d/logrotate-easia-blue
+# =========================================
+# Stage 2: Create final runtime image
+# =========================================
+FROM python:3.10-slim
 
-# 6. Phân quyền và active cron
-RUN chmod 0644 /etc/cron.d/logrotate-easia-blue
-RUN crontab /etc/cron.d/logrotate-easia-blue
+# Cài thư viện hệ thống tối thiểu (runtime only)
+RUN apt-get update && apt-get install -y unixodbc curl && rm -rf /var/lib/apt/lists/*
 
-# 7. Expose port
+# Copy virtualenv từ builder stage
+COPY --from=builder /venv /venv
+
+# Copy code project vào
+COPY app /app/app
+COPY store /app/store
+COPY upload /app/upload
+COPY train /app/train
+COPY test /app/test
+COPY run.py /app/run.py
+COPY .env /app/.env
+
+# Chạy bằng user không phải root (nếu muốn bảo mật hơn)
+# RUN adduser --disabled-password appuser
+# USER appuser
+
+WORKDIR /app
+
+# Export path virtualenv
+ENV PATH="/venv/bin:$PATH"
+
+# Expose port
 EXPOSE 8901
 
-# 8. Command start cả app và cron service
-CMD service cron start && uvicorn app.main:app --host 0.0.0.0 --port 8901 --reload
+# Lệnh mặc định khi container run
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8901"]

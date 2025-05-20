@@ -9,6 +9,10 @@
   - Hỗ trợ **train YOLOv8** để detect vùng OCR cho file scan.
   - Xây dựng hệ thống dễ dàng bảo trì, mở rộng.
 
+bây giờ tôi muốn tìm hiểu
+
+tổng hợp giúp tôi các thư viện, models, các công cụ hỗ trợ phân tích văn bản thành các mục key-value để lưu vào json cho kiểu văn bản hợp đồng khách sạn đang sử dụng hiện nay
+
 # 2. 🏗️ Cấu trúc tổng thể dự án
 
 ```
@@ -16,22 +20,27 @@
    │
    ├── app/
    │   ├── __init__.py
-   │   ├── main.py                  # Khởi động FastAPI app
+   │   ├── main.py                    # Khởi động FastAPI app
    │   │
-   │   ├── api/                      # Các route API
+   │   ├── api/                       # Các route API
    │   │   ├── __init__.py
    │   │   └── endpoints/
    │   │       ├── __init__.py
-   │   │       ├── upload.py         # API: upload file PDF
-   │   │       ├── extract.py        # API: extract data
-   │   │       ├── extract.py        # API: get all files in upload folder
-   │   │       ├── database.py       # API: push JSON vào SQL Server
-   │   │       └── status.py         # API: kiểm tra server
+   │   │       ├── upload.py                        # API: upload file PDF
+   │   │       ├── extract.py                       # API: extract data
+   │   │       ├── extract.py                       # API: get all files in upload folder
+   │   │       ├── database.py                      # API: push JSON vào SQL Server
+   │   │       ├── process_pdf.py                   # API: Xử lý các file pdf
+   │   │       ├── flow_upload_process_extract.py   # API: upload -> Process -> extract -> json
+   │   │       └── status.py                        # API: kiểm tra server
    │   │
    │   ├── config/                   # Cấu hình hệ thống
-   │   │   ├── __init__.py
+   │   │   ├── base_settings.py    # Config chung
+   │   │   ├── dev_settings.py     # Config cho development
+   │   │   ├── prod_settings.py    # Config cho production
    │   │   ├── config.py             # Đọc biến môi trường từ .env
-   │   │   └── database.py           # Kết nối SQL Server
+   │   │   ├── database.py           # Kết nối SQL Server
+   │   │   └── __init__.py
    │   │
    │   ├── core/                     # Modular core: xử lý extract chi tiết theo text/scan/mixed – tuyệt vời
    │   │   ├── extract_text_only.py
@@ -45,6 +54,7 @@
    │   │   ├── yolo_detector.py      # Detect vùng text bằng YOLOv8
    │   │   ├── ocr_reader.py         # OCR text bằng PaddleOCR
    │   │   ├── contract_parser.py    # Phân tích text thành JSON
+   │   │   ├── storage_service.py    # Dịch vụ quản lý file trong hệ thống.
    │   │   └── contract_extractor.py # Điều hướng xử lý theo loại file
    │   │
    │   ├── models/                   # Định nghĩa dữ liệu, schema
@@ -59,13 +69,17 @@
    │       ├── decorator_logging.py     # Decorator log thời gian thực thi
    │       └── file_utils.py         # Kiểm tra file, move file, validate file
    │
+   ├── frontend/                     # Giao diện hướng dẫn sử dụng, ghé api, các chính sách, thông tin
+   │
    ├── store/                        # File vận hành trong runtime
    │   ├── input/                    # File PDF gốc
    │   ├── output/                   # File kết quả JSON/Excel
    │   ├── temp/                     # File tạm OCR, detect
    │   └── backup/                   # Backup file gốc
    │
-   ├── upload/                       # Upload file template, rule, cấu hình tùy chỉnh
+   ├── notebooks/                    # Lưu các file jupyter notebook
+   │
+   ├── uploads/                      # Upload file template, rule, cấu hình tùy chỉnh
    │
    ├── train/                        # Dữ liệu training YOLOv8
    │   ├── images/                   # Ảnh dùng để train YOLO
@@ -104,10 +118,10 @@
 
 ```pwsh
 
-              [ Client (Frontend, Postman, App) ]
-                          ↓
-                    [ FastAPI Server ]
-                          ↓
+                [ Client (Frontend, Postman, App) ]
+                              ↓
+                      [ FastAPI Server ]
+                              ↓
 ┌────────────────────────────────────────────────────────────────────┐
 │                             app/                                   │
 │                                                                    │
@@ -119,14 +133,14 @@
 │ Configs: config/config.py, config/database.py                      │
 │ Utils: middleware_logging.py, decorator_logging.py, file_utils.py  │
 └────────────────────────────────────────────────────────────────────┘
-                          ↓
-                [ store/input/ ]
-                [ store/output/ ]
-                [ store/temp/ ]
-                [ upload/, train/, test/ ]
+                              ↓
+                       [ store/input/ ]
+                      [ store/output/ ]
+                       [ store/temp/ ]
+                  [ upload/, train/, test/ ]
 
-                          ↓
-                [ Database SQL Server ]
+                              ↓
+                    [ Database SQL Server ]
 
 ```
 
@@ -190,19 +204,20 @@
 
 1. ✅ Hoàn thành cấu trúc project đầy đủ
 2. ⬜ Viết check_pdf_type() phân loại PDF
-3. ⬜Xây dựng pdf_processor.py (chuyển ảnh)
-4. ⬜Xây dựng yolo_detector.py (detect vùng)
-5. ⬜Xây dựng ocr_reader.py (OCR vùng ảnh)
-6. ⬜Xây dựng contract_parser.py (phân tích text)
-7. ⬜Xây dựng contract_extractor.py (pipeline điều hướng)
-8. ⬜Viết các endpoint API (upload, extract, push-db)
-9. ⬜Setup train/test folder YOLO
-10. ⬜Tối ưu code, logging, validate file
-11. ⬜Viết tài liệu hướng dẫn sử dụng (README)
-12. ⬜Viết script hỗ trợ train YOLO nhanh (nếu cần)
+3. ⬜ Xây dựng pdf_processor.py (chuyển ảnh)
+4. ⬜ Xây dựng yolo_detector.py (detect vùng)
+5. ⬜ Xây dựng ocr_reader.py (OCR vùng ảnh)
+6. ⬜ Xây dựng contract_parser.py (phân tích text)
+7. ⬜ Xây dựng contract_extractor.py (pipeline điều hướng)
+8. ⬜ Viết các endpoint API (upload, extract, push-db)
+9. ⬜ Setup train/test folder YOLO
+10. ⬜ Tối ưu code, logging, validate file
+11. ⬜ Viết tài liệu hướng dẫn sử dụng (README)
+12. ⬜ Viết script hỗ trợ train YOLO nhanh (nếu cần)
 13. ⬜ - nếu văn bản có thể trích xuất được, tiếp tục xử lý.
 14. ⬜ Log sang hệ thống ngoài (ELK Stack, Grafana Loki...)
 15. ⬜ Gửi cảnh báo khi lỗi nặng (ERROR) bằng email hoặc Slack
+16. ⬜ Thêm versioning API
 
 - kiểm tra định dạng file
   - sử dụng các thư viện như python-magic hoặc mimetypes để xác định loại file (PDF hoặc DOCX).

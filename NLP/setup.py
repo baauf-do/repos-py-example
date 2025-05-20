@@ -98,7 +98,7 @@ def main():
   log(f"\n✅ Sử dụng Python: {selected_cmd}")
 
   # Tên thư mục môi trường ảo
-  venv_dir = ".venv-green"
+  venv_dir = ".venv-example"
 
   # Kiểm tra xem môi trường ảo đã tồn tại chưa
   if not os.path.exists(venv_dir):
@@ -129,9 +129,9 @@ def main():
   log(f"📚 Cài đặt thư viện từ {req_file} ({'GPU' if use_gpu else 'CPU'})")
   run([pip_exec, "install", "-r", req_file, "-f", "https://download.pytorch.org/whl/torch_stable.html"])
 
-  if use_gpu:
-    log("🚀 Cài paddlepaddle-gpu riêng từ nguồn chính thức...")
-    run([pip_exec, "install", "paddlepaddle-gpu==2.5.2.post118", "-f", "https://www.paddlepaddle.org.cn/whl/mkl/avx/stable.html"])
+  # if use_gpu:
+  #   log("🚀 Cài paddlepaddle-gpu riêng từ nguồn chính thức...")
+  #   run([pip_exec, "install", "paddlepaddle-gpu==2.5.2.post118", "-f", "https://www.paddlepaddle.org.cn/whl/mkl/avx/stable.html"])
 
   # Cài đặt Jupyter và ipykernel
   log("\n📦 Cài đặt Jupyter và ipykernel để sử dụng môi trường ảo trong Jupyter Notebook...")

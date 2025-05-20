@@ -29,7 +29,13 @@ class ExtractScanOnly:
     text = " ".join(extracted_texts)
     parsed_data = ContractParser.parse(text)
 
-    json_path = os.path.join(output_folder, os.path.basename(pdf_path).replace(".pdf", ".json"))
-    export_to_json(parsed_data.dict(), json_path)
+    # Nếu parsed_data là dict rồi thì không dùng .dict()
+    if isinstance(parsed_data, dict):
+      parsed_dict = parsed_data
+    else:
+      parsed_dict = parsed_data.dict()
 
-    return parsed_data.dict()
+    json_path = os.path.join(output_folder, os.path.basename(pdf_path).replace(".pdf", ".json"))
+    export_to_json(parsed_dict, json_path)
+
+    return parsed_dict

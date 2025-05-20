@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.endpoints import upload, extract, database, status, files, process_pdf
+from app.api.endpoints import upload, extract, database, status, files, process_pdf, flow_upload_process_extract
 from app.utils.logging_utils import configure_logging
 from app.utils.middleware_logging import LoggingMiddleware
 
@@ -17,6 +17,7 @@ app.include_router(database.router, prefix="/api")
 app.include_router(status.router, prefix="/api")
 app.include_router(files.router, prefix="/api")
 app.include_router(process_pdf.router, prefix="/api")
+app.include_router(flow_upload_process_extract.router, prefix="/api")
 
 
 @app.get("/")

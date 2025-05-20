@@ -2,13 +2,28 @@
 
 services:
   easia-blue:
-    build: .
     container_name: easia-blue-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
     ports:
-      - "8901:8901"
+      - "${PORT:-8901}:8901"
     volumes:
       - .:/app
+    command: >
+      uvicorn app.main:app --host 0.0.0.0 --port 8901 --reload
+    depends_on:
+      - sqlserver
+    restart: unless-stopped
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: easia-blue-db
     environment:
-      - HOST=0.0.0.0
-      - PORT=8901
-    restart: always
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    restart: unless-stopped

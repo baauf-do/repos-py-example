@@ -59,6 +59,7 @@ faker==18.0.0
 tqdm==4.65.0
 labelImg==1.8.6
 python-dotenv
+pydantic-settings
 
 # open ai free for local
 # ollama

@@ -1,0 +1,10 @@
+﻿version: "3.9"
+
+services:
+  easia-blue:
+    environment:
+      ENV: development
+    command: >
+      uvicorn app.main:app --host 0.0.0.0 --port 8901 --reload
+    volumes:
+      - .:/app  # Mount code realtime

@@ -2,7 +2,7 @@
 
 import os
 import pandas as pd
-from app.core.config import EXCEL_FOLDER
+from app.config.config import EXCEL_FOLDER
 
 
 def load_all_excel_data():

@@ -442,7 +442,7 @@ tesseract/*
 *.pyd
 #.env
 *.db
-*.pdf
-*.xlsx
+#*.pdf
+#*.xlsx
 .ipynb_checkpoints/
 

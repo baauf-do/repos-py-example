@@ -1029,4 +1029,6 @@
   "python.analysis.extraPaths": [
     "./src/venv-gpu-"
   ],
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "python-envs.pythonProjects": [],
 }

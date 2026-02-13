@@ -49,6 +49,8 @@ wcode-iai/                    # Thư mục gốc cho toàn bộ dự án
 │   │   └── README.md        # Mô tả repo .NET Core
 │   │
 │   └── easia.sln       # File solution của dự án .NET Core (nếu có)
+|
+├── easia-green/             # FastAPI service 2 (ví dụ: passport)
 │
 ├── docker-compose.yml      # File cấu hình Docker Compose để orchestrate các dịch vụ
 └── README.md               # Tài liệu mô tả tổng quan về toàn bộ dự án
